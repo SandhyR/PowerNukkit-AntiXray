@@ -21,6 +21,7 @@ package cn.wode490390.nukkit.antixray;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockID;
 import cn.nukkit.blockstate.BlockState;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
@@ -51,7 +52,7 @@ public class AntiXray extends PluginBase implements Listener {
 
     final boolean[] filter = new boolean[256];
     final boolean[] ore = new boolean[256];
-    final int[] dimension = new int[]{Block.STONE, Block.NETHERRACK, Block.AIR, Block.AIR};
+    final int[] dimension = new int[]{BlockID.STONE, BlockID.NETHERRACK, BlockID.AIR, BlockID.AIR};
 
     private final Map<Level, WorldHandler> handlers = Maps.newHashMap();
 
