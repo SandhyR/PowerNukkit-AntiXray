@@ -55,7 +55,7 @@
     <dependencies>
         <dependency>
             <groupId>org.powernukkit</groupId>
-            <artifactId>powernnukkit</artifactId>
+            <artifactId>powernukkit</artifactId>
             <version>1.5.1.0-PN</version>
             <scope>provided</scope>
         </dependency>
