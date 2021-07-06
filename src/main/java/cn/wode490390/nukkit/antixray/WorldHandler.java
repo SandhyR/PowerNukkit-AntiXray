@@ -1,18 +1,18 @@
-/**
+/*
  * wodeTeam is pleased to support the open source community by making AntiXray available.
- * 
+ *
  * Copyright (C) 2019  Woder
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/gpl-3.0>.
  */
@@ -20,17 +20,14 @@
 package cn.wode490390.nukkit.antixray;
 
 import cn.nukkit.Player;
-import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockID;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntitySpawnable;
 import cn.nukkit.blockstate.BlockState;
-import cn.nukkit.level.GlobalBlockPalette;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.format.ChunkSection;
 import cn.nukkit.level.format.anvil.Anvil;
 import cn.nukkit.level.format.anvil.Chunk;
-import cn.nukkit.level.format.anvil.util.BlockStorage;
 import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.util.BitArrayVersion;
 import cn.nukkit.level.util.PalettedBlockStorage;
@@ -50,8 +47,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.nio.ByteOrder;
 import java.util.List;
@@ -93,7 +88,7 @@ public class WorldHandler extends PluginTask<Plugin> {
     };
     private static final int MAGIC_NUMBER = 0b111;
 
-    private static final int AIR_BLOCK_RUNTIME_ID = GlobalBlockPalette.getOrCreateRuntimeId(Block.AIR, 0);
+    private static final int AIR_BLOCK_RUNTIME_ID = BlockState.AIR.getRuntimeId();
 
     private final Long2ObjectOpenHashMap<Int2ObjectMap<Player>> chunkSendQueue = new Long2ObjectOpenHashMap<>();
 

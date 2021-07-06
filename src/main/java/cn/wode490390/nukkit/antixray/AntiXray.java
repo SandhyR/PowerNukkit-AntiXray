@@ -1,4 +1,4 @@
-/**
+/*
  * wodeTeam is pleased to support the open source community by making AntiXray available.
  * 
  * Copyright (C) 2019  Woder
@@ -28,7 +28,6 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockUpdateEvent;
 import cn.nukkit.event.level.LevelUnloadEvent;
 import cn.nukkit.event.player.PlayerChunkRequestEvent;
-import cn.nukkit.level.GlobalBlockPalette;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
