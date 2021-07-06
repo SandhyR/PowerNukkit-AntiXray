@@ -21,8 +21,10 @@ package cn.wode490390.nukkit.antixray;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockID;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntitySpawnable;
+import cn.nukkit.blockstate.BlockState;
 import cn.nukkit.level.GlobalBlockPalette;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.format.ChunkSection;
@@ -50,14 +52,13 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.math.BigInteger;
 import java.nio.ByteOrder;
 import java.util.List;
 import java.util.Map;
 import java.util.function.IntConsumer;
 
 public class WorldHandler extends PluginTask<Plugin> {
-
-    private static final Field F_storage;
 
     private static final byte[] PALETTE_HEADER_V16 = new byte[]{(16 << 1) | 1};
     private static final byte[] PALETTE_HEADER_V8 = new byte[]{(8 << 1) | 1};
@@ -68,16 +69,6 @@ public class WorldHandler extends PluginTask<Plugin> {
     private static final byte[] EMPTY_SECTION;
 
     static {
-        try {
-            Field f = Field.class.getDeclaredField("modifiers");
-            f.setAccessible(true);
-
-            F_storage = cn.nukkit.level.format.anvil.ChunkSection.class.getDeclaredField("storage");
-            f.setInt(F_storage, F_storage.getModifiers() & ~Modifier.FINAL);
-            F_storage.setAccessible(true);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
 
         BinaryStream stream = new BinaryStream();
         PalettedBlockStorage emptyStorage = new PalettedBlockStorage(BitArrayVersion.V1);
@@ -91,14 +82,14 @@ public class WorldHandler extends PluginTask<Plugin> {
     }
 
     private static final int[] MAGIC_BLOCKS = {
-            Block.GOLD_ORE,
-            Block.IRON_ORE,
-            Block.COAL_ORE,
-            Block.LAPIS_ORE,
-            Block.DIAMOND_ORE,
-            Block.REDSTONE_ORE,
-            Block.EMERALD_ORE,
-            Block.QUARTZ_ORE
+            BlockID.GOLD_ORE,
+            BlockID.IRON_ORE,
+            BlockID.COAL_ORE,
+            BlockID.LAPIS_ORE,
+            BlockID.DIAMOND_ORE,
+            BlockID.REDSTONE_ORE,
+            BlockID.EMERALD_ORE,
+            BlockID.QUARTZ_ORE
     };
     private static final int MAGIC_NUMBER = 0b111;
 
@@ -193,10 +184,6 @@ public class WorldHandler extends PluginTask<Plugin> {
                     stream.put(SECTION_HEADER); // Paletted chunk because Mojang messed up the old one
 
                     try {
-                        BlockStorage storage = (BlockStorage) F_storage.get(section);
-                        byte[] blocks = storage.getBlockIds();
-                        byte[] data = storage.getBlockData();
-
                         boolean resized = false;
                         int bits = 2;
                         int maxEntryValue = (1 << 4) - 1;
@@ -214,35 +201,35 @@ public class WorldHandler extends PluginTask<Plugin> {
                                 int tz = cz << 4;
                                 int xz = tx + tz;
                                 for (int cy = 0; cy < 16; cy++) {
-                                    int xy = tx + cy;
-                                    int zy = tz + cy;
                                     int index = xz + cy;
 
                                     int id = -1;
-                                    int meta = 0;
+                                    BigInteger meta = BigInteger.ZERO;
+
+                                    BlockState state = section.getBlockState(cx, cy, cz);
+                                    int blockId = state.getBlockId();
 
                                     if (cx != 0 && cx != 15 && cz != 0 && cz != 15 && cy != 0 && cy != 15 // skip chunk border
-                                            && !this.antixray.filter[blocks[((cx + 1) << 8) + zy] & 0xff]
-                                            && !this.antixray.filter[blocks[((cx - 1) << 8) + zy] & 0xff]
-                                            && !this.antixray.filter[blocks[xy + ((cz + 1) << 4)] & 0xff]
-                                            && !this.antixray.filter[blocks[xy + ((cz - 1) << 4)] & 0xff]
-                                            && !this.antixray.filter[blocks[index + 1] & 0xff]
-                                            && !this.antixray.filter[blocks[index - 1] & 0xff]) {
+                                            && !this.antixray.filter[section.getBlockState(cx + 1, cy, cz).getBlockId()]
+                                            && !this.antixray.filter[section.getBlockState(cx - 1, cy, cz).getBlockId()]
+                                            && !this.antixray.filter[section.getBlockState(cx, cy, cz + 1).getBlockId()]
+                                            && !this.antixray.filter[section.getBlockState(cx, cy, cz - 1).getBlockId()]
+                                            && !this.antixray.filter[section.getBlockState(cx, cy + 1, cz).getBlockId()]
+                                            && !this.antixray.filter[section.getBlockState(cx, cy - 1, cz).getBlockId()]) {
                                         if (this.antixray.obfuscatorMode) {
                                             id = MAGIC_BLOCKS[index & MAGIC_NUMBER];
-                                        } else if (this.antixray.ore[blocks[index] & 0xff]) {
+                                        } else if (this.antixray.ore[blockId]) {
                                             id = this.fakeBlock;
                                         }
                                     }
 
                                     if (id == -1) {
-                                        id = blocks[index] & 0xff;
+                                        id = blockId;
 
-                                        byte nibbleData = data[index >>> 1];
-                                        meta = (index & 1) == 0 ? nibbleData & 0xf : (nibbleData & 0xf0) >>> 4;
+                                        meta = state.getBlock().getHugeDamage();
                                     }
 
-                                    int runtimeId = GlobalBlockPalette.getOrCreateRuntimeId(id, meta);
+                                    int runtimeId = BlockState.of(id, meta.intValue()).getRuntimeId();
                                     int paletteIndex = palette.indexOf(runtimeId);
                                     if (paletteIndex == -1) {
                                         paletteIndex = palette.size();

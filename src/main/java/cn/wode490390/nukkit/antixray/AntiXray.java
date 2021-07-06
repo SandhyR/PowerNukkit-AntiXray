@@ -21,6 +21,7 @@ package cn.wode490390.nukkit.antixray;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
+import cn.nukkit.blockstate.BlockState;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
@@ -109,7 +110,7 @@ public class AntiXray extends PluginBase implements Listener {
         node = "overworld-fake-block";
         try {
             this.dimension[0] = config.getInt(node, this.dimension[0]) & 0xff;
-            GlobalBlockPalette.getOrCreateRuntimeId(this.dimension[0], 0);
+            BlockState.of(this.dimension[0], 0);
         } catch (Exception e) {
             this.dimension[0] = Block.STONE;
             this.logLoadException(node, e);
@@ -117,7 +118,7 @@ public class AntiXray extends PluginBase implements Listener {
         node = "nether-fake-block";
         try {
             this.dimension[1] = config.getInt(node, this.dimension[1]) & 0xff;
-            GlobalBlockPalette.getOrCreateRuntimeId(this.dimension[1], 0);
+            BlockState.of(this.dimension[1], 0);
         } catch (Exception e) {
             this.dimension[1] = Block.NETHERRACK;
             this.logLoadException(node, e);
@@ -151,7 +152,7 @@ public class AntiXray extends PluginBase implements Listener {
                     this.filter[id] = true;
                 }
             }
-            if (!this.obfuscatorMode) {
+            if (!this.obfuscatorMode && ores != null) {
                 for (int id : ores) {
                     if (id > -1 && id < 256) {
                         this.ore[id] = true;
@@ -203,10 +204,11 @@ public class AntiXray extends PluginBase implements Listener {
                 int z = vector.getFloorZ();
                 UpdateBlockPacket packet = new UpdateBlockPacket();
                 try {
-                    packet.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(level.getFullBlock(x, y, z));
+                    Block at = level.getBlock(x, y, z);
+                    packet.blockRuntimeId = BlockState.of(at.getId(), at.getHugeDamage().intValue()).getRuntimeId();
                 } catch (Exception tryAgain) {
                     try {
-                        packet.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(level.getBlockIdAt(x, y, z), 0);
+                        packet.blockRuntimeId = level.getBlockRuntimeId(x, y, z);
                     } catch (Exception ex) {
                         continue;
                     }
