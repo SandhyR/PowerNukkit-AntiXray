@@ -7,41 +7,41 @@
     <groupId>cn.wode490390.nukkit</groupId>
     <artifactId>antixray</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.3</version>
-    <name>AntiXray</name>
-    <description>Anti X-Ray cheat plugin for Nukkit</description>
-    <url>http://wode490390.cn/</url>
-    <inceptionYear>2018</inceptionYear>
+    <version>1.2.3-PN.1-SNAPSHOT</version>
+    <name>AntiXray for PowerNukkit</name>
+    <description>Anti X-Ray cheat plugin for PowerNukkit</description>
+    <url>https://github.com/PowerNukkit/Plugin-AntiXray</url>
+    <inceptionYear>2021</inceptionYear>
 
     <licenses>
         <license>
             <name>GNU General Public License, Version 3.0</name>
-            <url>http://www.gnu.org/licenses/gpl.html</url>
+            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/wode490390/AntiXray/issues</url>
+        <url>https://github.com/PowerNukkit/Plugin-AntiXray/issues</url>
     </issueManagement>
 
     <ciManagement>
-        <system>CircleCI</system>
-        <url>https://circleci.com/gh/wode490390/AntiXray</url>
+        <system>GitHub</system>
+        <url>https://github.com/PowerNukkit/Plugin-AntiXray/actions</url>
     </ciManagement>
 
     <scm>
-        <connection>scm:git:https://github.com/wode490390/AntiXray.git</connection>
-        <developerConnection>scm:git:git@github.com:wode490390/AntiXray.git</developerConnection>
-        <url>https://github.com/wode490390/AntiXray</url>
+        <connection>scm:git:https://github.com/PowerNukkit/Plugin-AntiXray.git</connection>
+        <developerConnection>scm:git:git@github.com:PowerNukkit/Plugin-AntiXray.git</developerConnection>
+        <url>https://github.com/PowerNukkit/Plugin-AntiXray</url>
     </scm>
 
     <distributionManagement>
         <repository>
             <id>github</id>
             <name>github-releases</name>
-            <url>https://maven.pkg.github.com/wode490390/AntiXray</url>
+            <url>https://maven.pkg.github.com/PowerNukkit/Plugin-AntiXray</url>
         </repository>
     </distributionManagement>
 
@@ -49,33 +49,20 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>nukkitx-repo</id>
-            <url>https://repo.nukkitx.com/main/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>cn.nukkit</groupId>
-            <artifactId>nukkit</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.powernukkit</groupId>
+            <artifactId>powernukkit</artifactId>
+            <version>1.5.1.0-PN</version>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>zero-allocation-hashing</artifactId>
-            <version>0.11</version>
-            <scope>compile</scope>
-        </dependency>-->
     </dependencies>
 
     <build>
-        <defaultGoal>clean package</defaultGoal>
-        <finalName>wodeAntiXray-${project.version}</finalName>
+        <finalName>powerAntiXray-${project.version}</finalName>
         <resources>
             <resource>
                 <targetPath>.</targetPath>
@@ -87,27 +74,6 @@
             </resource>
         </resources>
         <plugins>
-            <!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.3</version>
-                <configuration>
-                    <artifactSet>
-                        <includes>
-                            <include>*:*</include>
-                        </includes>
-                    </artifactSet>
-                    <createDependencyReducedPom>false</createDependencyReducedPom>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
@@ -125,7 +91,7 @@
                     <prefix>git</prefix>
                     <dateFormat>yyyy.MM.dd '@' HH:mm:ss z</dateFormat>
                     <dateFormatTimeZone>${user.timezone}</dateFormatTimeZone>
-                    <verbose>true</verbose>
+                    <verbose>false</verbose>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
                     <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
                     <format>properties</format>
