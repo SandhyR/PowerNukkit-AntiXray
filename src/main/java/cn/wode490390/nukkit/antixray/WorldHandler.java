@@ -220,7 +220,6 @@ public class WorldHandler extends PluginTask<Plugin> {
 
                                     if (id == -1) {
                                         id = blockId;
-
                                         meta = state.getBlock().getHugeDamage();
                                     }
 
