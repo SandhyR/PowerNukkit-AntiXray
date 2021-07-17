@@ -54,12 +54,18 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.powernukkit</groupId>
-            <artifactId>powernukkit</artifactId>
-            <version>1.5.1.0-PN</version>
-            <scope>provided</scope>
+            <groupId>com.github.Superzock3003</groupId>
+            <artifactId>PowerNukkit</artifactId>
+            <version>v1.17-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
     <build>
         <finalName>powerAntiXray-${project.version}</finalName>
