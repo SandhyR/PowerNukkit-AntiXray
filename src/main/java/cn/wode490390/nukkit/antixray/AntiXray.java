@@ -57,12 +57,6 @@ public class AntiXray extends PluginBase implements Listener {
 
     @Override
     public void onEnable() {
-        try {
-            new MetricsLite(this, 5123);
-        } catch (Throwable ignore) {
-
-        }
-
         this.saveDefaultConfig();
         Config config = this.getConfig();
 
