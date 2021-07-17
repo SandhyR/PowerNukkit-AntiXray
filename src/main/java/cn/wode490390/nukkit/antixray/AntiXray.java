@@ -49,8 +49,8 @@ public class AntiXray extends PluginBase implements Listener {
     boolean memoryCache = false;
     private List<String> worlds;
 
-    final boolean[] filter = new boolean[256];
-    final boolean[] ore = new boolean[256];
+    final boolean[] filter = new boolean[750];
+    final boolean[] ore = new boolean[750];
     final int[] dimension = new int[]{Block.STONE, Block.NETHERRACK, Block.AIR, Block.AIR};
 
     private final Map<Level, WorldHandler> handlers = Maps.newHashMap();
@@ -147,13 +147,13 @@ public class AntiXray extends PluginBase implements Listener {
             }
 
             for (int id : filters) {
-                if (id > -1 && id < 256) {
+                if (id > -1 && id < 750) {
                     this.filter[id] = true;
                 }
             }
             if (!this.obfuscatorMode && ores != null) {
                 for (int id : ores) {
-                    if (id > -1 && id < 256) {
+                    if (id > -1 && id < 750) {
                         this.ore[id] = true;
                     }
                 }
