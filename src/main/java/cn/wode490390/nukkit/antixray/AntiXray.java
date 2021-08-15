@@ -179,43 +179,50 @@ public class AntiXray extends PluginBase implements Listener {
     public void onBlockUpdate(BlockUpdateEvent event) {
         Position position = event.getBlock();
         Level level = position.getLevel();
-        if (this.worlds.contains(level.getName())) {
-            List<UpdateBlockPacket> packets = Lists.newArrayList();
-            for (Vector3 vector : new Vector3[]{
-                    position.add(1),
-                    position.add(-1),
-                    position.add(0, 1),
-                    position.add(0, -1),
-                    position.add(0, 0, 1),
-                    position.add(0, 0, -1)
-            }) {
-                int y = vector.getFloorY();
-                if (y > 255 || y < 0) {
+        if (!this.worlds.contains(level.getName())) return;
+
+        List<UpdateBlockPacket> packets = Lists.newArrayList();
+
+        for (Vector3 vector : new Vector3[]{
+                position.add(1),
+                position.add(2),
+                position.add(-1),
+                position.add(-2),
+                position.add(0, 1),
+                position.add(0, 2),
+                position.add(0, -1),
+                position.add(0, -2),
+                position.add(0, 0, 1),
+                position.add(0, 0, 2),
+                position.add(0, 0, -1),
+                position.add(0, 0, -2)
+        }) {
+            int y = vector.getFloorY();
+            if (y > 255 || y < 0) {
+                continue;
+            }
+            int x = vector.getFloorX();
+            int z = vector.getFloorZ();
+            UpdateBlockPacket packet = new UpdateBlockPacket();
+            try {
+                Block at = level.getBlock(x, y, z);
+                packet.blockRuntimeId = BlockState.of(at.getId(), at.getHugeDamage().intValue()).getRuntimeId();
+            } catch (Exception tryAgain) {
+                try {
+                    packet.blockRuntimeId = level.getBlockRuntimeId(x, y, z);
+                } catch (Exception ex) {
                     continue;
                 }
-                int x = vector.getFloorX();
-                int z = vector.getFloorZ();
-                UpdateBlockPacket packet = new UpdateBlockPacket();
-                try {
-                    Block at = level.getBlock(x, y, z);
-                    packet.blockRuntimeId = BlockState.of(at.getId(), at.getHugeDamage().intValue()).getRuntimeId();
-                } catch (Exception tryAgain) {
-                    try {
-                        packet.blockRuntimeId = level.getBlockRuntimeId(x, y, z);
-                    } catch (Exception ex) {
-                        continue;
-                    }
-                }
-                packet.x = x;
-                packet.y = y;
-                packet.z = z;
-                packet.flags = UpdateBlockPacket.FLAG_ALL_PRIORITY;
-                packets.add(packet);
             }
+            packet.x = x;
+            packet.y = y;
+            packet.z = z;
+            packet.flags = UpdateBlockPacket.FLAG_ALL_PRIORITY;
+            packets.add(packet);
+        }
 
-            if (packets.size() > 0) {
-                this.getServer().batchPackets(level.getChunkPlayers(position.getChunkX(), position.getChunkZ()).values().toArray(new Player[0]), packets.toArray(new UpdateBlockPacket[0]));
-            }
+        if (packets.size() > 0) {
+            this.getServer().batchPackets(level.getChunkPlayers(position.getChunkX(), position.getChunkZ()).values().toArray(new Player[0]), packets.toArray(new UpdateBlockPacket[0]));
         }
     }
 
